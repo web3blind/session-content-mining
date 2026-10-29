@@ -20,7 +20,7 @@ def make_db(path: Path) -> None:
     conn = sqlite3.connect(path)
     conn.executescript(
         """
-        CREATE TABLE sessions (id TEXT PRIMARY KEY, started_at REAL);
+        CREATE TABLE sessions (id TEXT PRIMARY KEY, started_at REAL, archived INTEGER DEFAULT 0);
         CREATE TABLE messages (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             session_id TEXT,
@@ -34,6 +34,7 @@ def make_db(path: Path) -> None:
         "INSERT INTO sessions (id, started_at) VALUES (?, ?)",
         [("s-active", 1720000000), ("s-archived", 1719000000)],
     )
+    conn.execute("UPDATE sessions SET archived=1 WHERE id=?", ("s-archived",))
     rows = [
         # inside the window (2024-07-01 .. 2024-07-05 Europe/Moscow)
         ("s-active", datetime(2024, 7, 1, 0, 0, tzinfo=ZONE).timestamp(), "user", "alpha-secret"),
@@ -48,6 +49,8 @@ def make_db(path: Path) -> None:
         ("s-archived", datetime(2024, 7, 4, 6, 0, tzinfo=ZONE).timestamp(), "user", "zeta-secret"),
         # message in a session with no sessions row
         ("s-lost", datetime(2024, 7, 2, 9, 0, tzinfo=ZONE).timestamp(), "assistant", "eta-secret"),
+        ("s-tools", datetime(2024, 7, 2, tzinfo=ZONE).timestamp(), "tool", "tool-secret"),
+        ("s-tools", datetime(2024, 7, 2, tzinfo=ZONE).timestamp(), "system", "system-secret"),
         # message with a missing timestamp
         ("s-active", None, "user", "theta-secret"),
         # message with a non-numeric timestamp
@@ -116,7 +119,7 @@ class InventoryCliTests(unittest.TestCase):
         by_session = {s["session_id"]: s for s in m["sessions"]}
         self.assertEqual(
             sorted({x["role"] for s in m["sessions"] for x in s["messages"]}),
-            ["assistant", "user"],
+            ["assistant", "system", "tool", "user"],
         )
         self.assertFalse(by_session["s-lost"]["session_record_exists"])
         self.assertTrue(by_session["s-active"]["session_record_exists"])
@@ -180,8 +183,8 @@ class InventoryCliTests(unittest.TestCase):
         m = self.load_manifest()
         self.assertEqual(summary["session_count"], m["session_count"])
         self.assertEqual(summary["message_count"], m["message_count"])
-        self.assertEqual(m["session_count"], 3)
-        self.assertEqual(m["message_count"], 5)  # 2 active + 2 archived + 1 orphan
+        self.assertEqual(m["session_count"], 4)
+        self.assertEqual(m["message_count"], 7)  # includes tool-only session
         self.assertTrue(m["sessions"][0]["link"].startswith("@session:default/"))
 
 

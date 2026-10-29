@@ -24,9 +24,13 @@ python3 scripts/inventory.py \
 
 `unplaced_timestamp_rows` reports rows with missing or non-numeric timestamps inside the snapshot: investigate them before claiming complete temporal coverage.
 
+## Review artifacts
+
+For dialogue-only work, keep one corpus file and one combined findings file, plus the immutable inventory and a compact progress ledger. The agent reads bounded slices and records validated extracts with source pointers; it resumes those same files after interruptions. The bundled script only creates the inventory. Corpus extraction, semantic review and checkpoints are instructions for the agent, not a bundled autonomous runner.
+
 ## Privacy
 
-The script exports message IDs, roles and timestamps only — never message text. A session inventory of a personal history is still sensitive (timestamps and session shapes reveal activity patterns): keep manifests local, and review any candidates for private data before sharing or publishing them. There is no network access or telemetry.
+The script exports message IDs, session IDs, roles and timestamps, profile names, session links, the absolute database path, snapshot boundaries and counts — never message text. These metadata can identify a local account or reveal directory names. A session inventory of a personal history is still sensitive (timestamps and session shapes reveal activity patterns): keep manifests local, and review any candidates for private data before sharing or publishing them. There is no network access or telemetry.
 
 **Accuracy:** A nonempty search result is not full-session coverage, and `inventory.py` enumerates records but does not read them. The completeness claims in the skill text only hold if the read and reconcile steps are actually done.
 

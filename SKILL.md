@@ -1,7 +1,7 @@
 ---
 name: session-content-mining
 description: Use when mining a period's conversation sessions for post or content ideas, without confusing keyword search with a complete review.
-version: 1.0.0
+version: 1.0.1
 author: Session Content Mining contributors
 license: MIT
 metadata:
@@ -27,7 +27,10 @@ Optional companions, load them if you have them: an audience/content-policy skil
 4. The native session-search filters (e.g. `session_search.after/before`) typically filter session *start* time. Use them and any search index to find related evidence, not to enumerate everything active during a period. Relative windows and top-N results are not completeness proofs.
 
 ## One launch covers the entire period
-- Treat the user's explicit instruction to complete the entire pass autonomously as authorization to use a durable background runner when the volume requires it. Do not insert a redundant permission question and stop merely because the user cannot answer interactively. An explicit prohibition on background work still overrides this rule.
+- Background execution and delegation require the user's authorization under the host's policies. Autonomy alone is not permission to launch a durable background runner. Once authorized, continue without redundant approval gates; respect any explicit prohibition.
+- For an explicitly dialogue-only assignment, include only the requested user/assistant text, excluding tool calls, tool results and file-reading output. This narrower scope overrides generic tool-review instructions below. Keep one corpus file, one combined findings file and compact progress. Use isolated reviewers without history persistence when supported; if unavailable, disclose that limitation rather than claiming no history duplication.
+- Unless another end is explicitly agreed, include available messages through the launch day. Obtain the actual launch timestamp with a tool and pin it as the end-exclusive cutoff in the agreed timezone. Never extend the boundary while running or claim future messages were included.
+- Keep the dialogue corpus in one local file with stable profile/session/message IDs and timestamps. Keep validated extracts, corrections, candidate ideas and source pointers in a second combined findings file. A separate immutable inventory manifest and compact progress ledger are bookkeeping, not duplicate transcript collections. Resume the same files after interruption. Review bounded slices, never the whole corpus in one context; validate source pointers before accepting extracts. These are agent workflow instructions, not additional commands implemented by the inventory helper.
 - Continue automatically from batch to batch until every in-scope session has been examined. Batches, weeks, months and checkpoints are internal work units, not user approval gates. Never stop after a sample or ask whether to continue merely because a batch ended.
 - Do not skip a session because its title, source, age or length looks unpromising. Read all in-period user/assistant content and examine tool-only sessions for useful evidence. Record a no-topic outcome only after examination, not instead of it. Inspect relevant tool details before asserting facts.
 - During the complete pass, select potentially useful topics and deduplicate against the publication registry, previous ideas and this run's candidates. A duplicate topic does not justify skipping the remainder of its source session.
