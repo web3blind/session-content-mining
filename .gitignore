@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+*.local.json
+*.jsonl
+manifest*.json
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+runs/
+output/
+*.log
+plan.md
+publish-plan.md
