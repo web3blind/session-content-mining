@@ -1,8 +1,14 @@
 # Session Content Mining (public skill)
 
-A Hermes/agent skill for mining a period's conversation sessions for post or content ideas without confusing a keyword search with a complete review. It bundles a read-only SQLite inventory script that enumerates every in-period message by **message timestamp** (not session start), so archived, short, untitled, cron and tool-only sessions cannot silently drop out. Python 3.10+; standard library only.
+A Hermes/agent skill for deeply analyzing a period's conversation sessions for user-defined goals without confusing a keyword search with a complete review. It bundles a read-only SQLite inventory script that enumerates every in-period message by **message timestamp** (not session start), so archived, short, untitled, cron and tool-only sessions cannot silently drop out. Python 3.10+; standard library only.
 
-The skill text carries the full workflow: scope resolution, the inventory-first rule, one-launch full passes, read/extract/resume, checkpoints, and the editorial pass. `references/coverage.md` is the coverage-and-resume contract for the manifest and progress ledger; `references/large-corpus.md` is for multi-gigabyte `state.db` files (bounded keyset reads, deduplication, privacy scrubbing, ledger resume).
+The skill text carries the full workflow: scope resolution, the inventory-first rule, one-launch full passes, read/extract/resume, checkpoints, and the synthesis pass. `references/coverage.md` is the coverage-and-resume contract for the manifest and progress ledger; `references/large-corpus.md` is for multi-gigabyte `state.db` files (bounded keyset reads, deduplication, privacy scrubbing, ledger resume).
+
+## Purpose and boundaries
+
+Build knowledge notes, decision histories, project timelines, outstanding-task lists, reusable lessons, structured datasets or post ideas. No content skill or publication registry is required. Post discovery is an optional scenario in `references/post-ideas.md`, not the core purpose.
+
+The established repository and skill name stay unchanged for compatibility. This is a skill plus an inventory helper, not a plugin or a complete autonomous analysis engine. The model performs the semantic review. Compact output does not delete, archive, compact or replace source sessions; history retention is outside this skill's scope.
 
 ## Install
 
